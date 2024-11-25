@@ -4,7 +4,6 @@ function [fits, model_output] = fit_extended_model_VB(formatted_file, result_dir
     addpath(fundir);
 %     addpath('~/Documents/MATLAB/MatJAGS/');
     cd(fundir);
-    defaultPlotParameters
 
 %     sub = load_TMS_v1([datadir '/EIT_HorizonTaskOutput_HierarchicalModelFormat_v2.csv']);
     sub = load_TMS_v1(formatted_file);
@@ -139,6 +138,7 @@ function [fits, model_output] = fit_extended_model_VB(formatted_file, result_dir
         field = DCM.field;
         % get fitted and fixed params
         fits(k).id = k;
+        fits(k).num_games_played = MDP.datastruct.G;
         for i = 1:length(field)
             if ismember(field{i},{'alpha_start', 'alpha_inf'})
                 fits(k).(field{i}) = 1/(1+exp(-DCM.Ep.(field{i})));
@@ -154,7 +154,9 @@ function [fits, model_output] = fit_extended_model_VB(formatted_file, result_dir
                 error("Param not propertly transformed");
             end
         end
-        model_output = model_KFcond_v2_SMT_CMG(params,MDP.datastruct.c5, MDP.datastruct.r,MDP.datastruct);    
+        model_output = model_KFcond_v2_SMT_CMG(params,MDP.datastruct.c5, MDP.datastruct.r,MDP.datastruct);
+        fits(k).directed_exploration = fits(k).info_bonus_h6 - fits(k).info_bonus_h1;
+        fits(k).random_exploration = fits(k).dec_noise_h6_22 - fits(k).dec_noise_h1_22;
         fits(k).average_action_prob = mean(model_output.action_probs(~isnan(model_output.action_probs)), 'all');
         fits(k).model_acc = sum(model_output.action_probs(~isnan(model_output.action_probs)) > 0.5) / numel(model_output.action_probs(~isnan(model_output.action_probs)));
         

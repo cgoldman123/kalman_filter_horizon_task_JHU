@@ -22,6 +22,8 @@ addpath([root 'rsmith/all-studies/core/matjags']);
 addpath([root 'rsmith/lab-members/clavalley/MATLAB/functions']);
 addpath([root '/rsmith/all-studies/util/spm12/']);
 addpath([root '/rsmith/all-studies/util/spm12/toolbox/DEM/']);
+addpath([root '/rsmith/all-studies/models/extended-horizon']);
+
 
 %% Import model-specific fitting function
 % Navigate to this directory to see the model fitting function and wrapper
